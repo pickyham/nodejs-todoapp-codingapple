@@ -56,9 +56,14 @@ app.post('/add', function(요청,응답){ //꺼내 쓰려면 body-parser를 설�
     db.collection('counter').findOne({name:'게시물갯수'}, function(에러, 결과){
         console.log(결과.totalPost);
         let 총게시물갯수 = 결과.totalPost;
-        let sampleData = {_id: 총게시물갯수 ,제목 : 요청.body.title, 날짜 : 요청.body.date}
+        let sampleData = {_id: 총게시물갯수 + 1 ,제목 : 요청.body.title, 날짜 : 요청.body.date}
         db.collection('post').insertOne(sampleData, function(에러,결과){
             console.log('저장완료');
+            //
+            db.collection('counter').updateOne({name:'게시물갯수'},{ $inc : {totalPost:1}},function(에러, 결과){
+                if(에러){return console.log(에러)}
+            })
+            // db.collection('counter').updateOne({어떤데이터를 수정할지},{수정값},function(err, sampleData){})
         });
     });
 
